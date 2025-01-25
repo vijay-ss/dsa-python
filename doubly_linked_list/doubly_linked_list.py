@@ -69,6 +69,59 @@ class DoublyLinkedList:
                 new_node.prev = prev
             
             cur = cur.next
+    
+    def delete(self, key) -> None:
+        """
+        case 1:
+            - node is head of the linked list
+            - absence of next node
+        case 2:
+            - want to delete head node, which
+            points to a next node
+        case 3:
+            - we dont want to remove the head node
+            - next & prev node is not None
+        case 4:
+            - we dont want to remove the head node
+            - we want to remove the last node
+        """
+        cur = self.head
+        while cur:
+            if cur.data == key and cur == self.head:
+                if not cur.next:
+                    cur = None
+                    self.head = None
+                    return
+                else:
+                    next = cur.next
+                    cur.next = None
+                    next.prev = None
+                    cur = None
+                    self.head = next
+                    return
+
+            elif cur.data == key:
+                if cur.next:
+                    next = cur.next
+                    prev = cur.prev
+                    prev.next = next
+                    next.prev = prev
+                    cur.next = None
+                    cur.prev = None
+                    cur = None
+                    return
+            
+                else:
+                    prev = cur.prev
+                    prev.next = None
+                    cur.prev = None
+                    cur = None
+                    return
+
+            cur = cur.next
+
+
+                    
 
     def print_list(self):
         cur = self.head
@@ -78,14 +131,10 @@ class DoublyLinkedList:
 
 if __name__ == "__main__":
     dll = DoublyLinkedList()
-    dll.prepend(0)
     dll.append(1)
     dll.append(2)
     dll.append(3)
     dll.append(4)
-    dll.prepend(-1)
-    dll.add_after_node(1, 11)
-    dll.add_after_node(3, 99)
-    dll.add_before_node(3, 77)
+    dll.delete(3)
 
     dll.print_list()
