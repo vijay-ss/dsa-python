@@ -120,7 +120,16 @@ class DoublyLinkedList:
 
             cur = cur.next
 
-
+    def reverse(self) -> None:
+        tmp = None
+        cur = self.head
+        while cur:
+            tmp = cur.prev
+            cur.prev = cur.next
+            cur.next = tmp
+            cur = cur.prev
+        if tmp:
+            self.head = tmp.prev
                     
 
     def print_list(self):
@@ -135,6 +144,7 @@ if __name__ == "__main__":
     dll.append(2)
     dll.append(3)
     dll.append(4)
-    dll.delete(3)
 
+    dll.print_list()
+    dll.reverse()
     dll.print_list()
