@@ -70,7 +70,7 @@ class DoublyLinkedList:
             
             cur = cur.next
     
-    def delete(self, key) -> None:
+    def delete_by_key(self, key) -> None:
         """
         case 1:
             - node is head of the linked list
@@ -120,6 +120,56 @@ class DoublyLinkedList:
 
             cur = cur.next
 
+    def delete_node(self, node) -> None:
+        """
+        case 1:
+            - node is head of the linked list
+            - absence of next node
+        case 2:
+            - want to delete head node, which
+            points to a next node
+        case 3:
+            - we dont want to remove the head node
+            - next & prev node is not None
+        case 4:
+            - we dont want to remove the head node
+            - we want to remove the last node
+        """
+        cur = self.head
+        while cur:
+            if cur == node and cur == self.head:
+                if not cur.next:
+                    cur = None
+                    self.head = None
+                    return
+                else:
+                    next = cur.next
+                    cur.next = None
+                    next.prev = None
+                    cur = None
+                    self.head = next
+                    return
+
+            elif cur == node:
+                if cur.next:
+                    next = cur.next
+                    prev = cur.prev
+                    prev.next = next
+                    next.prev = prev
+                    cur.next = None
+                    cur.prev = None
+                    cur = None
+                    return
+            
+                else:
+                    prev = cur.prev
+                    prev.next = None
+                    cur.prev = None
+                    cur = None
+                    return
+
+            cur = cur.next
+
     def reverse(self) -> None:
         tmp = None
         cur = self.head
@@ -130,7 +180,32 @@ class DoublyLinkedList:
             cur = cur.prev
         if tmp:
             self.head = tmp.prev
-                    
+
+    def remove_duplicates(self) -> None:
+        cur = self.head
+        seen = dict()
+        while cur:
+            if cur.data not in seen:
+                seen[cur.data] = 1
+                cur = cur.next
+            else:
+                nxt = cur.next
+                self.delete_node(cur)
+                cur = nxt
+
+    def pairs_with_sum(self, sum_val) -> None:
+        pairs = list()
+        p = self.head
+        q = None
+        while p:
+            q = p.next
+            while q:
+                if p.data + q.data == sum_val:
+                    pairs.append((p.data, q.data))
+                q = q.next
+            p = p.next
+        
+        return pairs
 
     def print_list(self):
         cur = self.head
@@ -143,8 +218,10 @@ if __name__ == "__main__":
     dll.append(1)
     dll.append(2)
     dll.append(3)
+    dll.append(3)
     dll.append(4)
-
+    dll.remove_duplicates()
     dll.print_list()
-    dll.reverse()
-    dll.print_list()
+    print(dll.pairs_with_sum(5))
+    # print("printing reverse")
+    # dll.reverse()
