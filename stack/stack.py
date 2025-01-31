@@ -56,6 +56,18 @@ class Stack:
         # O(1)
         return self.top is None
 
+
+def reverse_string(stack: Stack, input_str: str) -> str:
+    for i in input_str:
+        stack.push(i)
+
+    reversed_str = ""
+    while not stack.is_empty():
+        reversed_str += stack.pop()
+    
+    return reversed_str
+
+
 if __name__ == "__main__":
     stack = Stack()
     print(stack.is_empty())
@@ -71,3 +83,6 @@ if __name__ == "__main__":
     print(stack.pop())
     print(stack)
     print(stack.is_empty())
+
+    stack = Stack()
+    print(reverse_string(stack, "Hello"))
