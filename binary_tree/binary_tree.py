@@ -15,8 +15,18 @@ class BinarySearchTree:
     def __init__(self):
         self.root = None
     
-    def __contains__(self, key):
-        pass
+    def __contains__(self, key) -> bool:
+        current_node = self.root
+
+        while current_node is not None:
+            if key < current_node.key:
+                current_node = current_node.left
+            elif key > current_node.key:
+                current_node = current_node.right
+            else:
+                return True
+        
+        return False
 
     def __iter__(self):
         pass
@@ -25,10 +35,48 @@ class BinarySearchTree:
         pass
 
     def insert(self, key, value):
-        pass
+        if self.root is None:
+            self.root = Node(key)
+            self.root.value = value
+        else:
+            current_node = self.root
+            while True:
+                if key < current_node.key:
+                    if current_node.left is None:
+                        current_node.left = Node(key)
+                        current_node.left.value = value
+                        current_node.left.parent = current_node
+                        break
+                    else:
+                        current_node = current_node.left
+                elif key > current_node.key:
+                    if current_node.right is None:
+                        current_node.right = Node(key)
+                        current_node.right.value = value
+                        current_node.right.parent = current_node
+                        break
+                    else:
+                        current_node = current_node.right
+                else:
+                    current_node.value = value
+                    break
 
     def search(self, key):
-        pass
+        current_node = self.root
+
+        while True:
+            if current_node is None or current_node.key == key:
+                return current_node
+            elif key < current_node.key:
+                if current_node.left is None:
+                    return None
+                else:
+                    current_node = current_node.left
+            else:
+                if current_node.right is None:
+                    return None
+                else:
+                    current_node = current_node.right
 
     def delete(self, key):
         pass
