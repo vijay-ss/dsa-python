@@ -15,6 +15,7 @@ class BinarySearchTree:
     def __init__(self):
         self.root = None
     
+    # O(n) worst case, O(log n) avg case, O(h) always
     def __contains__(self, key) -> bool:
         current_node = self.root
 
@@ -28,12 +29,15 @@ class BinarySearchTree:
         
         return False
 
+    # O(n)
     def __iter__(self):
-        pass
+        yield from self._in_order_traversal(self.root)
 
+    # O(n)
     def __repr__(self):
-        pass
+        return str(list(self._in_order_traversal(self.root)))
 
+    # O(n) worst case, O(log n) avg case, O(h) always
     def insert(self, key, value):
         if self.root is None:
             self.root = Node(key)
@@ -60,7 +64,8 @@ class BinarySearchTree:
                 else:
                     current_node.value = value
                     break
-
+    
+    # O(n) worst case, O(log n) avg case, O(h) always
     def search(self, key):
         current_node = self.root
 
@@ -78,31 +83,124 @@ class BinarySearchTree:
                 else:
                     current_node = current_node.right
 
+    # O(n) worst case, O(log n) avg case, O(h) always
     def delete(self, key):
-        pass
+        node = self.search(key)
 
+        if node is None:
+            raise KeyError("Node with this key does not exist")
+        
+        self._delete(node)
+
+    # O(n)
     def traverse(self, order):
-        pass
+        if order == "inorder":
+            yield from self._in_order_traversal(self.root)
+        elif order == "preorder":
+            yield from self._pre_order_traversal(self.root)
+        elif order == "postorder":
+            yield from self._post_order_traversal(self.root)
+        else:
+            raise ValueError("Unknown order")
 
-    def _delete(self, key):
-        pass
+    def _delete(self, node):
+        # 1) node is leaf node
+        if node.left is None and node.right is None:
+            if node.parent is None:
+                self.root = None
+            else:
+                if node.parent.right == node:
+                    node.parent.right = None
+                else:
+                    node.parent.left = None
+                node.parent = None
+        # 2) node has one child node
+        elif node.left is None or node.right is None:
+            child_node = node.left if node.left is not None else node.right
+
+            if node.parent is None:
+                child_node.parent = None
+                self.root = child_node
+            else:
+                if node.parent.right == node:
+                    node.parent.right = child_node
+                else:
+                    node.parent.left = child_node
+                child_node.parent = node.parent
+
+            node.parent = node.left = node.right = None
+        # 3) node has 2 child nodes
+        else:
+            successor = self._successor(node)
+
+            node.key = successor.key
+            node.value = successor.value
+
+            self._delete(successor)
 
     def _successor(self, node):
-        pass
+        if node is None:
+            raise ValueError("Cannot find successor of None")
+        
+        if node.right is None:
+            return None
+        else:
+            current_node = node.right
+            while current_node.left is not None:
+                current_node = current_node.left
+            return current_node
 
     def _predecessor(self, node):
-        pass
+        if node is None:
+            raise ValueError("Cannot find predecessor of None")
+        
+        if node.left is None:
+            return None
+        else:
+            current_node = node.left
+            while current_node.right is not None:
+                current_node = current_node.right
+            return current_node
 
-    def _in_order_traversal(self):
-        pass
+    def _in_order_traversal(self, node):
+        if node is not None:
+            yield from self._in_order_traversal(node.left)
+            yield (node.key, node.value)
+            yield from self._in_order_traversal(node.right)
 
-    def _pre_order_traversal(self):
-        pass
+    def _pre_order_traversal(self, node):
+        if node is not None:
+            yield (node.key, node.value)
+            yield from self._pre_order_traversal(node.left)
+            yield from self._pre_order_traversal(node.right)
 
-    def _post_order_traversal(self):
-        pass
-
+    def _post_order_traversal(self, node):
+        if node is not None:
+            yield from self._post_order_traversal(node.left)
+            yield from self._post_order_traversal(node.right)
+            yield (node.key, node.value)
 
 
 if __name__ == "__main__":
-    tree = BinarySearchTree()
+    bst = BinarySearchTree()
+
+    bst.insert(10, "hello")
+    bst.insert(5, "hello")
+    bst.insert(22, "hello")
+    bst.insert(2, "hello")
+    bst.insert(9, "hello")
+    bst.insert(12, "hello")
+    bst.insert(30, "hello")
+    bst.insert(11, "hello")
+    bst.insert(15, "hello")
+    bst.insert(30, "hello")
+    bst.insert(23, "hello")
+    bst.insert(35, "hello")
+
+    bst.delete(22)
+
+    for i in bst.traverse("preorder"):
+        print(i)
+    
+    print(bst.search(5))
+
