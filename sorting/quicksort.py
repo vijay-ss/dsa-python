@@ -14,6 +14,7 @@ def quick_sort(arr):
 
     return L + [p] + R
 
+
 if __name__ == "__main__":
     elements = [11, 9, 29, 7, 2, 15, 28]
     print(quick_sort(elements))
